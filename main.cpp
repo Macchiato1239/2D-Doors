@@ -5,65 +5,7 @@
 #include <vector>
 #include "linker.h"
 
-
-typedef struct Rect {
-    SDL_Rect rect;
-    Uint8 r, g, b, a;
-
-    // Draw method
-    void draw(SDL_Renderer* renderer) {
-        SDL_SetRenderDrawColor(renderer, r, g, b, a);
-        SDL_RenderDrawRect(renderer, &rect);
-        SDL_RenderFillRect(renderer, &rect);
-    }
-    std::vector<int> space_taken(){
-        int x = rect.x;
-        int y = rect.y;
-        int x1 = x+rect.w;
-        int y1= y+rect.h;
-        return {x,y,x1,y1};
-    }
-
-
-    //Collision check
-    bool collide_rect(Rect other_rect) {        
-        // left = rect.right > other.left
-        bool collide_left = (rect.x + rect.w > other_rect.rect.x)  ;
-
-        // right = rect.left < other.right
-        bool collide_right = rect.x < (other_rect.rect.x + other_rect.rect.w);
-
-        // up = rect.up < other.bottom -> rect.y>other.y+h
-        bool collide_up = rect.y < (other_rect.rect.y+other_rect.rect.h) ;
-
-        // down = rect.down > other.up ->rect.y+h > other.yas
-        bool collide_down = (rect.y+rect.h) > other_rect.rect.y;
-
-        bool colliding = (
-            (collide_left == 1) && 
-            (collide_right == 1) && 
-            (collide_up == 1) && 
-            (collide_down == 1)
-        );
-
-
-        //Collision Testing
-        // std::cout << collide_left << collide_right << collide_down << collide_up << '\n';   
-        return colliding;
-    }
-    bool collide_check(std::vector<Rect> a){
-        for(int i=0; i<a.size(); i++){
-            if (collide_rect(a[i])){
-                return true;
-            };
-        };
-        return false;
-    } 
-} Rect;
 std::vector<Rect> entity={};
-
-
-
 
 Rect rect1 = { {20, 20, 60, 60}, (Uint8)255, (Uint8)0, (Uint8)0, (Uint8)255 };
 
