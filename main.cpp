@@ -17,24 +17,26 @@ Rect wall2= {{400,250, 60,100}, (Uint8)0, (Uint8)255, (Uint8)0, (Uint8)255};
 
 
 //SPEED
-int speed_x = 5; //speed per second
-int speed_y = 5; //speed per second
+float speed_x = 300; //speed per second
+float speed_y = 300; //speed per second
 
 //BOUNDS
 
-int window_height = 500;
-int window_width = 700;
+float window_height = 500;
+float window_width = 700;
 
-int left=0;
-int top=0;
-int bottom=window_height;
-int right=window_width;
+float left=0;
+float top=0;
+float bottom=window_height;
+float right=window_width;
 
 int frame_counter = 0;
 int* frame_counter_ptr=&frame_counter;
 
-Uint32 last_time = SDL_GetTicks();
-Uint32 current_time;
+Uint64 last_time = SDL_GetPerformanceCounter();
+Uint64 current_time;
+Uint32 fps_last_time=SDL_GetTicks();
+Uint32 fps_current_time;
 
 
 const Uint8* key_state = SDL_GetKeyboardState(NULL);
@@ -82,10 +84,23 @@ int main(int argc, char* argv[]) { //Places for execution
                     running = false;
                 };
             }
-            //Moving up
         }
+        //DELTA TIME
+        Uint64 current_time = SDL_GetPerformanceCounter();
+
+
+
+
+        //MOVEMENT
+        //Moving up
+
+        float dt =
+            (float)(current_time - last_time)
+            / SDL_GetPerformanceFrequency();
+
+        last_time = current_time;
         if (key_state[SDL_SCANCODE_W]) {
-            rect1.rect.y=std::max(top, rect1.rect.y-speed_y);
+            rect1.rect.y=std::max(top, rect1.rect.y-speed_y*dt);
             Result result=Collision(rect1);
             if (!std::holds_alternative<bool>(result)){
                 auto [x, y, w, h] =
@@ -96,7 +111,7 @@ int main(int argc, char* argv[]) { //Places for execution
         // moving left
         };
         if (key_state[SDL_SCANCODE_A]) {
-            rect1.rect.x=std::max(left, rect1.rect.x-speed_x);
+            rect1.rect.x=std::max(left, rect1.rect.x-speed_x*dt);
             Result result=Collision(rect1);
             if (!std::holds_alternative<bool>(result)){
                 auto [x, y, w, h] =
@@ -107,7 +122,7 @@ int main(int argc, char* argv[]) { //Places for execution
         // moving down
         };
         if (key_state[SDL_SCANCODE_S]) { 
-            rect1.rect.y=std::min(bottom-rect1.rect.h, rect1.rect.y+speed_y);
+            rect1.rect.y=std::min(bottom-rect1.rect.h, rect1.rect.y+speed_y*dt);
             Result result=Collision(rect1);
             if (!std::holds_alternative<bool>(result)){
                 auto [x, y, w, h] =
@@ -118,13 +133,13 @@ int main(int argc, char* argv[]) { //Places for execution
         };
         //moving right
         if (key_state[SDL_SCANCODE_D]) { 
-            rect1.rect.x=std::min(right-rect1.rect.w, rect1.rect.x+speed_x);
+            rect1.rect.x=std::min(right-rect1.rect.w, rect1.rect.x+speed_x*dt);
             Result result=Collision(rect1);
             if (!std::holds_alternative<bool>(result)){
                 auto [x, y, w, h] =
                 std::get<std::tuple<int, int, int, int>>(result);
 
-                rect1.rect.x=x-rect1.rect.h;
+                rect1.rect.x=x-rect1.rect.w;
             }
         };
         
@@ -142,12 +157,12 @@ int main(int argc, char* argv[]) { //Places for execution
 
         // push out frame
         (*frame_counter_ptr)++;
-        current_time = SDL_GetTicks();
-        if ((current_time-last_time)>=1000){
-            double second = (current_time-last_time)/1000;
+        fps_current_time = SDL_GetTicks();
+        if ((fps_current_time-fps_last_time)>=1000){
+            double second = (fps_current_time-fps_last_time)/1000;
             double fps=(*frame_counter_ptr)/second;
             std::string fps_string=std::to_string(fps);
-            last_time=current_time;
+            fps_last_time=fps_current_time;
             *frame_counter_ptr = 0;
             SDL_SetWindowTitle(window, fps_string.c_str());
         }        
