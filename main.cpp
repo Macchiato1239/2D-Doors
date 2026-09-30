@@ -90,7 +90,7 @@ int main(int argc, char* argv[]) { //Places for execution
                         auto [x, y, w, h] =
                          std::get<std::tuple<int, int, int, int>>(result);
 
-                        rect1.rect.y=y+rect1.rect.h;
+                        rect1.rect.y=y+h;
                     }
                 // moving left
                 };
@@ -101,7 +101,7 @@ int main(int argc, char* argv[]) { //Places for execution
                         auto [x, y, w, h] =
                         std::get<std::tuple<int, int, int, int>>(result);
 
-                        rect1.rect.x=x+rect1.rect.w;
+                        rect1.rect.x=x+w;
                     }
                 // moving down
                 };
