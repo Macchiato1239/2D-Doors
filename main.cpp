@@ -4,8 +4,8 @@
 #include <algorithm>
 #include <vector>
 #include "linker.h"
+#include <variant>
 
-std::vector<Rect> entity={};
 
 Rect rect1 = { {20, 20, 60, 60}, (Uint8)255, (Uint8)0, (Uint8)0, (Uint8)255 };
 
@@ -35,10 +35,6 @@ int* frame_counter_ptr=&frame_counter;
 
 Uint32 last_time = SDL_GetTicks();
 Uint32 current_time;
-
-
-
-
 
 // MAIN MAIN MAIN MAIN MAIN
 
@@ -89,18 +85,46 @@ int main(int argc, char* argv[]) { //Places for execution
                 // moving up
                 if (event.key.keysym.sym == SDLK_w) {
                     rect1.rect.y=std::max(top, rect1.rect.y-speed_y);
+                    Result result=Collision(rect1);
+                    if (!std::holds_alternative<bool>(result)){
+                        auto [x, y, w, h] =
+                         std::get<std::tuple<int, int, int, int>>(result);
+
+                        rect1.rect.y=y+rect1.rect.h;
+                    }
                 // moving left
                 };
                 if (event.key.keysym.sym == SDLK_a) {
                     rect1.rect.x=std::max(left, rect1.rect.x-speed_x);
+                    Result result=Collision(rect1);
+                    if (!std::holds_alternative<bool>(result)){
+                        auto [x, y, w, h] =
+                        std::get<std::tuple<int, int, int, int>>(result);
+
+                        rect1.rect.x=x+rect1.rect.w;
+                    }
                 // moving down
                 };
                 if (event.key.keysym.sym == SDLK_s) { 
                     rect1.rect.y=std::min(bottom-rect1.rect.h, rect1.rect.y+speed_y);
+                    Result result=Collision(rect1);
+                    if (!std::holds_alternative<bool>(result)){
+                        auto [x, y, w, h] =
+                        std::get<std::tuple<int, int, int, int>>(result);
+
+                        rect1.rect.y=y-rect1.rect.h;
+                    }
                 };
                 //moving right
                 if (event.key.keysym.sym == SDLK_d) { 
                     rect1.rect.x=std::min(right-rect1.rect.w, rect1.rect.x+speed_x);
+                    Result result=Collision(rect1);
+                    if (!std::holds_alternative<bool>(result)){
+                        auto [x, y, w, h] =
+                        std::get<std::tuple<int, int, int, int>>(result);
+
+                        rect1.rect.x=x-rect1.rect.h;
+                    }
                 };
             }
         }
@@ -137,6 +161,3 @@ int main(int argc, char* argv[]) { //Places for execution
 
     return 0;
 }
-
-
-//functions can be defined here or in other files

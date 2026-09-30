@@ -3,7 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include <vector>
-
+// CUBE.CPP
 struct Rect { //Making cubes
     SDL_Rect rect;
     Uint8 r, g, b, a;
@@ -17,4 +17,8 @@ struct Rect { //Making cubes
     bool collide_check(const std::vector<Rect>& a);
 };
 
+//COLLISION.CPP
+extern std::vector<Rect> entity;
+using Result = std::variant<bool, std::tuple<int, int, int, int>>;
+extern Result Collision(Rect player);
 #endif
