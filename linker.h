@@ -4,7 +4,7 @@
 #include <SDL2/SDL.h>
 #include <vector>
 
-struct Rect {
+struct Rect { //Making cubes
     SDL_Rect rect;
     Uint8 r, g, b, a;
 

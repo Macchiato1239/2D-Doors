@@ -48,7 +48,7 @@ Uint32 current_time;
 int main(int argc, char* argv[]) { //Places for execution 
 
     SDL_Init(SDL_INIT_VIDEO);
-
+    //Create a window
     SDL_Window* window = SDL_CreateWindow(
         "Window",
         SDL_WINDOWPOS_CENTERED,
@@ -57,7 +57,7 @@ int main(int argc, char* argv[]) { //Places for execution
         window_height,
         0
     );
-
+    // Drawer
     SDL_Renderer* renderer = SDL_CreateRenderer(
         window,
         -1,
@@ -65,15 +65,12 @@ int main(int argc, char* argv[]) { //Places for execution
     );
 
     bool running = true;
-    entity.push_back(wall1);
+    entity.push_back(wall1); //Wall for collision check
     entity.push_back(wall2);
     SDL_Event event;
 
     while (running) {
   
-
-
-        current_time=SDL_GetTicks();
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
                 running = false;
