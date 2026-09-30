@@ -17,8 +17,8 @@ Rect wall2= {{400,250, 60,100}, (Uint8)0, (Uint8)255, (Uint8)0, (Uint8)255};
 
 
 //SPEED
-int speed_x = 30;
-int speed_y = 30;
+int speed_x = 5; //speed per second
+int speed_y = 5; //speed per second
 
 //BOUNDS
 
@@ -36,8 +36,12 @@ int* frame_counter_ptr=&frame_counter;
 Uint32 last_time = SDL_GetTicks();
 Uint32 current_time;
 
-// MAIN MAIN MAIN MAIN MAIN
 
+const Uint8* key_state = SDL_GetKeyboardState(NULL);
+
+// MAIN MAIN MAIN MAIN MAIN
+//
+//
 
 
 
@@ -53,11 +57,13 @@ int main(int argc, char* argv[]) { //Places for execution
         window_height,
         0
     );
+
     // Drawer
+
     SDL_Renderer* renderer = SDL_CreateRenderer(
         window,
         -1,
-        SDL_RENDERER_ACCELERATED
+        SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
     );
 
     bool running = true;
@@ -71,63 +77,56 @@ int main(int argc, char* argv[]) { //Places for execution
             if (event.type == SDL_QUIT) {
                 running = false;
             }
-            if (event.type == SDL_KEYDOWN) {
+            if (event.type == SDL_KEYDOWN) { //Have to use state instead of keydown
                 if (event.key.keysym.sym == SDLK_q) {
                     running = false;
                 };
-
-                //Call collision check on movement results before confirmation
-                //collide_check(vector)
-                //If true, move the block right next to the walls
-                //rect1.rect.y-overlap amount
-                
-
-                // moving up
-                if (event.key.keysym.sym == SDLK_w) {
-                    rect1.rect.y=std::max(top, rect1.rect.y-speed_y);
-                    Result result=Collision(rect1);
-                    if (!std::holds_alternative<bool>(result)){
-                        auto [x, y, w, h] =
-                         std::get<std::tuple<int, int, int, int>>(result);
-
-                        rect1.rect.y=y+h;
-                    }
-                // moving left
-                };
-                if (event.key.keysym.sym == SDLK_a) {
-                    rect1.rect.x=std::max(left, rect1.rect.x-speed_x);
-                    Result result=Collision(rect1);
-                    if (!std::holds_alternative<bool>(result)){
-                        auto [x, y, w, h] =
-                        std::get<std::tuple<int, int, int, int>>(result);
-
-                        rect1.rect.x=x+w;
-                    }
-                // moving down
-                };
-                if (event.key.keysym.sym == SDLK_s) { 
-                    rect1.rect.y=std::min(bottom-rect1.rect.h, rect1.rect.y+speed_y);
-                    Result result=Collision(rect1);
-                    if (!std::holds_alternative<bool>(result)){
-                        auto [x, y, w, h] =
-                        std::get<std::tuple<int, int, int, int>>(result);
-
-                        rect1.rect.y=y-rect1.rect.h;
-                    }
-                };
-                //moving right
-                if (event.key.keysym.sym == SDLK_d) { 
-                    rect1.rect.x=std::min(right-rect1.rect.w, rect1.rect.x+speed_x);
-                    Result result=Collision(rect1);
-                    if (!std::holds_alternative<bool>(result)){
-                        auto [x, y, w, h] =
-                        std::get<std::tuple<int, int, int, int>>(result);
-
-                        rect1.rect.x=x-rect1.rect.h;
-                    }
-                };
             }
+            //Moving up
         }
+        if (key_state[SDL_SCANCODE_W]) {
+            rect1.rect.y=std::max(top, rect1.rect.y-speed_y);
+            Result result=Collision(rect1);
+            if (!std::holds_alternative<bool>(result)){
+                auto [x, y, w, h] =
+                    std::get<std::tuple<int, int, int, int>>(result);
+
+                rect1.rect.y=y+h;
+            }
+        // moving left
+        };
+        if (key_state[SDL_SCANCODE_A]) {
+            rect1.rect.x=std::max(left, rect1.rect.x-speed_x);
+            Result result=Collision(rect1);
+            if (!std::holds_alternative<bool>(result)){
+                auto [x, y, w, h] =
+                std::get<std::tuple<int, int, int, int>>(result);
+
+                rect1.rect.x=x+w;
+            }
+        // moving down
+        };
+        if (key_state[SDL_SCANCODE_S]) { 
+            rect1.rect.y=std::min(bottom-rect1.rect.h, rect1.rect.y+speed_y);
+            Result result=Collision(rect1);
+            if (!std::holds_alternative<bool>(result)){
+                auto [x, y, w, h] =
+                std::get<std::tuple<int, int, int, int>>(result);
+
+                rect1.rect.y=y-rect1.rect.h;
+            }
+        };
+        //moving right
+        if (key_state[SDL_SCANCODE_D]) { 
+            rect1.rect.x=std::min(right-rect1.rect.w, rect1.rect.x+speed_x);
+            Result result=Collision(rect1);
+            if (!std::holds_alternative<bool>(result)){
+                auto [x, y, w, h] =
+                std::get<std::tuple<int, int, int, int>>(result);
+
+                rect1.rect.x=x-rect1.rect.h;
+            }
+        };
         
         // Per frame code
         //this is only checking collision with 1 wall, check for all entities
