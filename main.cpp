@@ -7,42 +7,16 @@
 #include <variant>
 
 
-Rect rect1 = { {20, 20, 20, 20}, (Uint8)255, (Uint8)0, (Uint8)0, (Uint8)255 };
+Rect rect1 = { {20, 20, 20, 20}, (Uint8)255, (Uint8)64, (Uint8)64, (Uint8)255 };
 //x, y, w, h
 
 // Putting created hard material into a list for collision check, (on creation?)
 //->
-Rect ground= {{0,400, 600,100}, (Uint8)0, (Uint8)255, (Uint8)0, (Uint8)255};
+Rect ground= {{0,400, 600,100}, (Uint8)0, (Uint8)0, (Uint8)0, (Uint8)255};
 
 // STATES
-enum State {
-    walking=0,
-    climbing=1,
-    falling=2,
-    jumping=3,
-};
+
 State state=State::walking;
-
-
-//SPEED
-float speed_x = 300; //speed per second
-float speed_y = 300; //speed per second
-
-float gravity=500; //how much y increases per loop
-
-float jump_height=20;
-float jump_time=100; //0.5 seconds or 500 ms
-float jump_cd=2000; //2s
-Uint32 last_jump=SDL_GetTicks();
-//BOUNDS
-
-float window_height = 500;
-float window_width = 700;
-
-float left=0;
-float top=0;
-float bottom=window_height;
-float right=window_width;
 
 int frame_counter = 0;
 int* frame_counter_ptr=&frame_counter;
@@ -58,7 +32,6 @@ const Uint8* key_state = SDL_GetKeyboardState(NULL);
 // MAIN MAIN MAIN MAIN MAIN
 //
 //
-
 
 
 int main(int argc, char* argv[]) { //Places for execution 
@@ -83,6 +56,8 @@ int main(int argc, char* argv[]) { //Places for execution
     );
 
     bool running = true;
+
+
     entity.push_back(ground);
     SDL_Event event;
 
@@ -113,7 +88,7 @@ int main(int argc, char* argv[]) { //Places for execution
         //MOVEMENT
         //Moving up
 
-        float dt =
+        dt =
             (float)(current_time - last_time)
             / SDL_GetPerformanceFrequency();
 
@@ -175,25 +150,14 @@ int main(int argc, char* argv[]) { //Places for execution
         // Per frame code
         //this is only checking collision with 1 wall, check for all entities
         //Gravity
+        object_falling(); //Keep player falling, but not a great idea
         
-        rect1.rect.y+=gravity*dt;
-        Result result = Collision(rect1);
-        if (!std::holds_alternative<bool>(result)){
-            auto [x, y, w, h] =
-            std::get<std::tuple<int, int, int, int>>(result);
-
-            rect1.rect.y=y-rect1.rect.h;
-        }
-        
-
-
-
 
 
 
 
         // Rendering rendering rendering rendering rendering
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); //white
         SDL_RenderClear(renderer);
         ground.draw(renderer);
         rect1.draw(renderer);
