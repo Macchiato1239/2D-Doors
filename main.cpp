@@ -7,18 +7,19 @@
 #include <variant>
 
 
-Rect rect1 = { {20, 20, 60, 60}, (Uint8)255, (Uint8)0, (Uint8)0, (Uint8)255 };
+Rect rect1 = { {20, 20, 20, 20}, (Uint8)255, (Uint8)0, (Uint8)0, (Uint8)255 };
+//x, y, w, h
 
 // Putting created hard material into a list for collision check, (on creation?)
 //->
-Rect wall1= {{200,200, 60,100}, (Uint8)0, (Uint8)255, (Uint8)0, (Uint8)255};
-Rect wall2= {{400,250, 60,100}, (Uint8)0, (Uint8)255, (Uint8)0, (Uint8)255};
-
+Rect ground= {{0,400, 600,100}, (Uint8)0, (Uint8)255, (Uint8)0, (Uint8)255};
 
 
 //SPEED
 float speed_x = 300; //speed per second
 float speed_y = 300; //speed per second
+
+float gravity=400;
 
 //BOUNDS
 
@@ -69,8 +70,7 @@ int main(int argc, char* argv[]) { //Places for execution
     );
 
     bool running = true;
-    entity.push_back(wall1); //Wall for collision check
-    entity.push_back(wall2);
+    entity.push_back(ground);
     SDL_Event event;
 
     while (running) {
@@ -147,12 +147,23 @@ int main(int argc, char* argv[]) { //Places for execution
         //this is only checking collision with 1 wall, check for all entities
 
         // Rendering
+        //Gravity
+        
+        rect1.rect.y+=gravity*dt;
+        Result result = Collision(rect1);
+        if (!std::holds_alternative<bool>(result)){
+            auto [x, y, w, h] =
+            std::get<std::tuple<int, int, int, int>>(result);
+
+            rect1.rect.y=y-rect1.rect.h;
+        }
+        
+
+
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
-
+        ground.draw(renderer);
         rect1.draw(renderer);
-        wall1.draw(renderer);
-        wall2.draw(renderer);
         rect1.collide_check(entity);
 
         // push out frame
