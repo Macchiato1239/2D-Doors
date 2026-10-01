@@ -32,7 +32,8 @@ float gravity=500; //how much y increases per loop
 
 float jump_height=20;
 float jump_time=100; //0.5 seconds or 500 ms
-Uint32 last_jump;
+float jump_cd=2000; //2s
+Uint32 last_jump=SDL_GetTicks();
 //BOUNDS
 
 float window_height = 500;
@@ -96,8 +97,10 @@ int main(int argc, char* argv[]) { //Places for execution
                     running = false;
                 };
                 if (event.key.keysym.sym == SDLK_SPACE) {
-                    state=State::jumping;
-                    last_jump=SDL_GetTicks();
+                    if ((SDL_GetTicks()-last_jump)>jump_cd){
+                        state=State::jumping;
+                        last_jump=SDL_GetTicks();
+                    }
                 }
             }
         }
@@ -158,6 +161,8 @@ int main(int argc, char* argv[]) { //Places for execution
                 rect1.rect.x=x-rect1.rect.w;
             }
         };
+
+        // Jumping
         if (state == State::jumping) { //I should make this an attribute of rect object, so to give other rects the same thing
             rect1.rect.y-=jump_height;
         }
@@ -180,7 +185,6 @@ int main(int argc, char* argv[]) { //Places for execution
             rect1.rect.y=y-rect1.rect.h;
         }
         
-        // Jumping
 
 
 
