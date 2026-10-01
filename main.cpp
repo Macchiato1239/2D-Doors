@@ -14,13 +14,25 @@ Rect rect1 = { {20, 20, 20, 20}, (Uint8)255, (Uint8)0, (Uint8)0, (Uint8)255 };
 //->
 Rect ground= {{0,400, 600,100}, (Uint8)0, (Uint8)255, (Uint8)0, (Uint8)255};
 
+// STATES
+enum State {
+    walking=0,
+    climbing=1,
+    falling=2,
+    jumping=3,
+};
+State state=State::walking;
+
 
 //SPEED
 float speed_x = 300; //speed per second
 float speed_y = 300; //speed per second
 
-float gravity=400;
+float gravity=500; //how much y increases per loop
 
+float jump_height=20;
+float jump_time=100; //0.5 seconds or 500 ms
+Uint32 last_jump;
 //BOUNDS
 
 float window_height = 500;
@@ -83,6 +95,10 @@ int main(int argc, char* argv[]) { //Places for execution
                 if (event.key.keysym.sym == SDLK_q) {
                     running = false;
                 };
+                if (event.key.keysym.sym == SDLK_SPACE) {
+                    state=State::jumping;
+                    last_jump=SDL_GetTicks();
+                }
             }
         }
         //DELTA TIME
@@ -142,11 +158,17 @@ int main(int argc, char* argv[]) { //Places for execution
                 rect1.rect.x=x-rect1.rect.w;
             }
         };
+        if (state == State::jumping) { //I should make this an attribute of rect object, so to give other rects the same thing
+            rect1.rect.y-=jump_height;
+        }
+        Uint32 cur_jump=SDL_GetTicks();
+
+        if (state == State::jumping && (cur_jump-last_jump>=jump_time)){
+            state=State::walking;
+        }
         
         // Per frame code
         //this is only checking collision with 1 wall, check for all entities
-
-        // Rendering
         //Gravity
         
         rect1.rect.y+=gravity*dt;
@@ -158,8 +180,15 @@ int main(int argc, char* argv[]) { //Places for execution
             rect1.rect.y=y-rect1.rect.h;
         }
         
+        // Jumping
 
 
+
+
+
+
+
+        // Rendering rendering rendering rendering rendering
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
         ground.draw(renderer);
