@@ -12,7 +12,7 @@ Rect rect1 = { {20, 20, 20, 20}, (Uint8)255, (Uint8)64, (Uint8)64, (Uint8)255 };
 
 // Putting created hard material into a list for collision check, (on creation?)
 //->
-Rect ground= {{0,400, 600,100}, (Uint8)0, (Uint8)0, (Uint8)0, (Uint8)255};
+Rect ground= {{0,400, 800,100}, (Uint8)0, (Uint8)0, (Uint8)0, (Uint8)255};
 Rect wall1= {{300,350, 50,50}, (Uint8)0, (Uint8)0, (Uint8)0, (Uint8)255};
 Rect wall2= {{370,300, 50,50}, (Uint8)0, (Uint8)0, (Uint8)0, (Uint8)255};
 
@@ -85,6 +85,7 @@ int main(int argc, char* argv[]) { //Places for execution
                     }
                 };
                 if (event.key.keysym.sym == SDLK_h) {
+                    std::cout<<"Hiding";
                     if (state==State::hiding) {
                         state=State::walking;
                     }
@@ -96,6 +97,8 @@ int main(int argc, char* argv[]) { //Places for execution
         }
         //DELTA TIME
         Uint64 current_time = SDL_GetPerformanceCounter();
+
+
 
 
 
@@ -158,12 +161,21 @@ int main(int argc, char* argv[]) { //Places for execution
             }
         };
 
+
+
+
+
+
         //Falling
         object_falling(); 
 
 
+
+
+
+
         
-        // Jumping
+        // JUMPING
         if (state == State::jumping) { 
             //I should make this an attribute of rect object, so to give other rects the same thing
             rect1.rect.y-=jump_height*dt;

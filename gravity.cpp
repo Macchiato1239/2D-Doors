@@ -8,10 +8,11 @@
 //When jump, trigger a process of moving up, not just 1 frame but multiple
 //Cant jump if on ground
 //Keep a state: Jump, idle, walking, falling, moving up&down a ladder
-float gravity=450; 
+float gravity=500; 
 
 void object_falling(){
-    if (state==State::jumping) {
+    if (state==State::jumping
+    || state==State::hiding) {
         return;
     }
     rect1.rect.y+=gravity*dt;

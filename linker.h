@@ -62,6 +62,7 @@ enum State {
     hiding=3,
     jumping=4,
 };
+//I have to set up a list, a state cant just switch to another without conditions.
 
 
 extern State state;
