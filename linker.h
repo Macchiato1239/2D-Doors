@@ -53,12 +53,19 @@ extern float gravity;
 extern void object_falling();
 
 
-//state.cpp
+//STATES
 
 enum State {
     walking=0,
     climbing=1,
     falling=2,
-    jumping=3,
+    hiding=3,
+    jumping=4,
 };
+
+
+extern State state;
 #endif
+//I should check if collision happens when player is moved down (every loop), if it does then state=walking
+//During walking state, player and jump
+//Else state=falling, during falling, jump is disabled, and it is harder to move.

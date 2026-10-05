@@ -10,7 +10,7 @@ float speed_y = 300; //speed per second
 float dt;
 //how much y increases per loop
 
-float jump_height=20;
+float jump_height=600;
 float jump_time=100; //0.5 seconds or 500 ms
 float jump_cd=500; //2s
 Uint32 last_jump=SDL_GetTicks();

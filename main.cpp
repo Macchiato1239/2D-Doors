@@ -13,10 +13,13 @@ Rect rect1 = { {20, 20, 20, 20}, (Uint8)255, (Uint8)64, (Uint8)64, (Uint8)255 };
 // Putting created hard material into a list for collision check, (on creation?)
 //->
 Rect ground= {{0,400, 600,100}, (Uint8)0, (Uint8)0, (Uint8)0, (Uint8)255};
+Rect wall1= {{300,350, 50,50}, (Uint8)0, (Uint8)0, (Uint8)0, (Uint8)255};
+Rect wall2= {{370,300, 50,50}, (Uint8)0, (Uint8)0, (Uint8)0, (Uint8)255};
+
 
 // STATES
-
 State state=State::walking;
+
 
 int frame_counter = 0;
 int* frame_counter_ptr=&frame_counter;
@@ -59,9 +62,12 @@ int main(int argc, char* argv[]) { //Places for execution
 
 
     entity.push_back(ground);
+    entity.push_back(wall1);
+    entity.push_back(wall2);
     SDL_Event event;
 
     while (running) {
+        std::cout<< state;
   
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
@@ -72,7 +78,7 @@ int main(int argc, char* argv[]) { //Places for execution
                     running = false;
                 };
                 if (event.key.keysym.sym == SDLK_SPACE) {
-                    if ((SDL_GetTicks()-last_jump)>jump_cd){
+                    if ((SDL_GetTicks()-last_jump)>jump_cd && state!=State::falling) {
                         state=State::jumping;
                         last_jump=SDL_GetTicks();
                     }
@@ -86,14 +92,14 @@ int main(int argc, char* argv[]) { //Places for execution
 
 
         //MOVEMENT
-        //Moving up
+        //Jump
 
         dt =
             (float)(current_time - last_time)
             / SDL_GetPerformanceFrequency();
 
         last_time = current_time;
-        if (key_state[SDL_SCANCODE_W]) {
+        if (key_state[SDL_SCANCODE_W] && state!=State::falling) {
             rect1.rect.y=std::max(top, rect1.rect.y-speed_y*dt);
             Result result=Collision(rect1);
             if (!std::holds_alternative<bool>(result)){
@@ -137,9 +143,23 @@ int main(int argc, char* argv[]) { //Places for execution
             }
         };
 
+        //Falling
+        object_falling(); 
+
+
+        
         // Jumping
-        if (state == State::jumping) { //I should make this an attribute of rect object, so to give other rects the same thing
-            rect1.rect.y-=jump_height;
+        if (state == State::jumping) { 
+            //I should make this an attribute of rect object, so to give other rects the same thing
+            rect1.rect.y-=jump_height*dt;
+            Result result=Collision(rect1);
+            if (!std::holds_alternative<bool>(result)){
+                auto [x, y, w, h] =
+                std::get<std::tuple<int, int, int, int>>(result);
+
+                rect1.rect.y=y+h;
+            }
+
         }
         Uint32 cur_jump=SDL_GetTicks();
 
@@ -150,8 +170,7 @@ int main(int argc, char* argv[]) { //Places for execution
         // Per frame code
         //this is only checking collision with 1 wall, check for all entities
         //Gravity
-        object_falling(); //Keep player falling, but not a great idea
-        
+        //Keep player falling, but not a great idea
 
 
 
@@ -161,6 +180,8 @@ int main(int argc, char* argv[]) { //Places for execution
         SDL_RenderClear(renderer);
         ground.draw(renderer);
         rect1.draw(renderer);
+        wall1.draw(renderer);
+        wall2.draw(renderer);
         rect1.collide_check(entity);
 
         // push out frame

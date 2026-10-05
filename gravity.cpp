@@ -11,13 +11,22 @@
 float gravity=450; 
 
 void object_falling(){
+    if (state==State::jumping) {
+        return;
+    }
     rect1.rect.y+=gravity*dt;
     Result result = Collision(rect1);
     if (!std::holds_alternative<bool>(result)){
+        state=State::walking;
         auto [x, y, w, h] =
         std::get<std::tuple<int, int, int, int>>(result);
 
         rect1.rect.y=y-rect1.rect.h;
+        
+    }
+    else
+    {
+        state=State::falling;
     }
 }
 
