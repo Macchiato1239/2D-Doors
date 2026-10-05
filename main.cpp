@@ -78,9 +78,18 @@ int main(int argc, char* argv[]) { //Places for execution
                     running = false;
                 };
                 if (event.key.keysym.sym == SDLK_SPACE) {
-                    if ((SDL_GetTicks()-last_jump)>jump_cd && state!=State::falling) {
+                    if ((SDL_GetTicks()-last_jump)>jump_cd 
+                    && (state==State::walking)) {
                         state=State::jumping;
                         last_jump=SDL_GetTicks();
+                    }
+                };
+                if (event.key.keysym.sym == SDLK_h) {
+                    if (state==State::hiding) {
+                        state=State::walking;
+                    }
+                    else if (state==State::walking) {
+                        state=State::hiding;
                     }
                 }
             }
@@ -92,7 +101,7 @@ int main(int argc, char* argv[]) { //Places for execution
 
 
         //MOVEMENT
-        //Jump
+        //Moving up
 
         dt =
             (float)(current_time - last_time)
@@ -108,9 +117,12 @@ int main(int argc, char* argv[]) { //Places for execution
 
                 rect1.rect.y=y+h;
             }
-        // moving left
+        // moving left, state: walking, falling
         };
-        if (key_state[SDL_SCANCODE_A]) {
+        if (key_state[SDL_SCANCODE_A]
+        && (state==State::walking 
+        || state==State::falling 
+        || state==State::jumping)) {
             rect1.rect.x=std::max(left, rect1.rect.x-speed_x*dt);
             Result result=Collision(rect1);
             if (!std::holds_alternative<bool>(result)){
@@ -132,7 +144,10 @@ int main(int argc, char* argv[]) { //Places for execution
             }
         };
         //moving right
-        if (key_state[SDL_SCANCODE_D]) { 
+        if (key_state[SDL_SCANCODE_D]
+        && (state==State::walking 
+        || state==State::falling 
+        || state==State::jumping)) { 
             rect1.rect.x=std::min(right-rect1.rect.w, rect1.rect.x+speed_x*dt);
             Result result=Collision(rect1);
             if (!std::holds_alternative<bool>(result)){
@@ -166,6 +181,8 @@ int main(int argc, char* argv[]) { //Places for execution
         if (state == State::jumping && (cur_jump-last_jump>=jump_time)){
             state=State::walking;
         }
+        //Hiding
+        
         
         // Per frame code
         //this is only checking collision with 1 wall, check for all entities
