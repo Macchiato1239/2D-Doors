@@ -17,6 +17,17 @@ struct Rect { //Making cubes
     bool collide_check(const std::vector<Rect>& a);
 };
 
+struct Room {
+    std::vector<Rect> objects;
+
+    void put(Rect object);
+
+    void render(SDL_Renderer* renderer);
+
+    void room_entity();
+
+};
+
 extern Rect rect1;
 extern Rect ground;
 

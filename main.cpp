@@ -8,14 +8,19 @@
 
 
 Rect rect1 = { {20, 20, 20, 20}, (Uint8)255, (Uint8)64, (Uint8)64, (Uint8)255 };
+//Render only the selected cubes
 //x, y, w, h
-
 // Putting created hard material into a list for collision check, (on creation?)
 //->
 Rect ground= {{0,400, 800,100}, (Uint8)0, (Uint8)0, (Uint8)0, (Uint8)255};
 Rect wall1= {{300,350, 50,50}, (Uint8)0, (Uint8)0, (Uint8)0, (Uint8)255};
 Rect wall2= {{370,300, 50,50}, (Uint8)0, (Uint8)0, (Uint8)0, (Uint8)255};
 
+Room room1;
+Room room2;
+Room current_room;
+
+int room_counter=1;
 
 // STATES
 State state=State::walking;
@@ -60,14 +65,26 @@ int main(int argc, char* argv[]) { //Places for execution
 
     bool running = true;
 
+    // ROOM TESTING
 
-    entity.push_back(ground);
-    entity.push_back(wall1);
-    entity.push_back(wall2);
+    room1.put(wall1);
+    room1.put(ground);
+
+    room2.put(wall2);
+    room2.put(ground);
+
     SDL_Event event;
 
     while (running) {
         std::cout<< state;
+
+        if (room_counter==1) {
+            current_room=room1;}
+        else if (room_counter==2) {
+            current_room=room2;
+        };
+            current_room.room_entity();
+
   
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
@@ -92,7 +109,15 @@ int main(int argc, char* argv[]) { //Places for execution
                     else if (state==State::walking) {
                         state=State::hiding;
                     }
-                }
+                };
+                if (event.key.keysym.sym == SDLK_r) {
+                    if (room_counter==1) {
+                        room_counter=2;
+                    }
+                    else if (room_counter==2) {
+                        room_counter=1;
+                    }
+                };
             }
         }
         //DELTA TIME
@@ -207,10 +232,15 @@ int main(int argc, char* argv[]) { //Places for execution
         // Rendering rendering rendering rendering rendering
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); //white
         SDL_RenderClear(renderer);
-        ground.draw(renderer);
+
+
+
+
+        // ground.draw(renderer);
         rect1.draw(renderer);
-        wall1.draw(renderer);
-        wall2.draw(renderer);
+        current_room.render(renderer);
+        // wall1.draw(renderer);
+        // wall2.draw(renderer);
         rect1.collide_check(entity);
 
         // push out frame
