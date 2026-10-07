@@ -12,13 +12,23 @@ Rect rect1 = { {20, 20, 20, 20}, (Uint8)255, (Uint8)64, (Uint8)64, (Uint8)255 };
 //x, y, w, h
 // Putting created hard material into a list for collision check, (on creation?)
 //->
-Rect ground= {{0,400, 800,100}, (Uint8)0, (Uint8)0, (Uint8)0, (Uint8)255};
-Rect wall1= {{300,350, 50,50}, (Uint8)0, (Uint8)0, (Uint8)0, (Uint8)255};
-Rect wall2= {{370,300, 50,50}, (Uint8)0, (Uint8)0, (Uint8)0, (Uint8)255};
 
-Room room1;
-Room room2;
+// i am not satisfied with the game loop arrangement, can it be ran multithreaded?
+
 Room current_room;
+Room room1{
+    {},
+    {},
+    {{600,300,50,50}, (Uint8)245, (Uint8)40, (Uint8)145, (Uint8)255},
+    {}
+};
+
+Room room2{
+    {},
+    {},
+    {},
+    {{0,300,50,50}, (Uint8)245, (Uint8)40, (Uint8)145, (Uint8)255}
+};
 
 int room_counter=1;
 
@@ -66,23 +76,25 @@ int main(int argc, char* argv[]) { //Places for execution
     bool running = true;
 
     // ROOM TESTING
+    room1.object_put(wall1); // genuinely do not have to do this, im just duplicating
+    room1.object_put(ground);
 
-    room1.put(wall1);
-    room1.put(ground);
-
-    room2.put(wall2);
-    room2.put(ground);
+    room2.object_put(wall2);
+    room2.object_put(ground);
 
     SDL_Event event;
 
     while (running) {
         std::cout<< state;
+        room1.has_prev_door = false;
+        room2.has_next_door = false;
 
         if (room_counter==1) {
             current_room=room1;}
         else if (room_counter==2) {
             current_room=room2;
         };
+            entity.clear();
             current_room.room_entity();
 
   
@@ -187,17 +199,8 @@ int main(int argc, char* argv[]) { //Places for execution
         };
 
 
-
-
-
-
         //Falling
         object_falling(); 
-
-
-
-
-
 
         
         // JUMPING
@@ -218,9 +221,16 @@ int main(int argc, char* argv[]) { //Places for execution
         if (state == State::jumping && (cur_jump-last_jump>=jump_time)){
             state=State::walking;
         }
-        //Hiding
-        
-        
+        //Moving to the next room
+        if (rect1.collide_rect(current_room.next_door)) {
+            room_counter=2;
+            rect1.rect.x=60;
+        }
+        if (rect1.collide_rect(current_room.prev_door)) {
+            room_counter=1;
+            rect1.rect.x=right-rect1.rect.w;
+        }
+
         // Per frame code
         //this is only checking collision with 1 wall, check for all entities
         //Gravity

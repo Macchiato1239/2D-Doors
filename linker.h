@@ -19,17 +19,26 @@ struct Rect { //Making cubes
 
 struct Room {
     std::vector<Rect> objects;
+    std::vector<Rect> interactives;
 
-    void put(Rect object);
+    Rect next_door;
+    Rect prev_door;
 
+    bool has_next_door = true;
+    bool has_prev_door = true;
+
+    void object_put(Rect object);
+    void interactive_put(Rect object);
     void render(SDL_Renderer* renderer);
-
     void room_entity();
-
 };
 
 extern Rect rect1;
 extern Rect ground;
+extern Rect wall1;
+extern Rect wall2;
+extern Room room1;
+extern Room room2;
 
 extern float speed_x;//speed per second
 extern float speed_y;//speed per second
