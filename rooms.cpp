@@ -26,23 +26,22 @@ void Room::interactive_put(Rect object) {
 };
 // Render
 void Room::render(SDL_Renderer* renderer){
-    for (int i=0; i<objects.size(); i++){
+    for (int i=0; i<objects.size(); i++){ //objects
         objects[i].draw(renderer);
     }
-    for (int i=0; i<interactives.size(); i++){
+    for (int i=0; i<interactives.size(); i++){ //interactives
         interactives[i].draw(renderer);
     }
     if (has_next_door) {
-        next_door.draw(renderer);
+        next_door.draw(renderer); //render the next door
     }
 
     if (has_prev_door) {
-        prev_door.draw(renderer);
+        prev_door.draw(renderer); // render the prev door
     }
 };
 
-//Collision
-void Room::room_entity(){
+void Room::room_entity(){ //Collision
     for (int i=0; i<objects.size(); i++){
         entity.push_back(objects[i]);
     }
@@ -54,3 +53,7 @@ void Room::room_entity(){
 //All rendering are done after all calculations
 //Have a function that render the current room's objects, variable, so as to always render the current room only
 
+//exiting and entering mechanism
+//When entering door, player is tp'ed to the next door, in the middle of it, but they must not count as colliding
+// Door should only work when player goes from being outside to overlapping with the door (colliding)
+// It would not work when the player goes from overlapping with the door to overlapping with the door.

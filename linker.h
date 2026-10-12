@@ -33,6 +33,7 @@ struct Room {
     void room_entity();
 };
 
+
 extern Rect rect1;
 extern Rect ground;
 extern Rect wall1;
@@ -84,6 +85,12 @@ enum State {
 };
 //I have to set up a list, a state cant just switch to another without conditions.
 
+enum enum_colliding {
+    door,
+    none,
+};
+
+extern enum_colliding current_colliding;
 
 extern State state;
 #endif

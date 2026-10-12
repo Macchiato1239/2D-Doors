@@ -14,12 +14,13 @@ Rect rect1 = { {20, 20, 20, 20}, (Uint8)255, (Uint8)64, (Uint8)64, (Uint8)255 };
 //->
 
 // i am not satisfied with the game loop arrangement, can it be ran multithreaded?
+enum_colliding current_colliding=enum_colliding::none; //
 
 Room current_room;
 Room room1{
     {},
     {},
-    {{600,300,50,50}, (Uint8)245, (Uint8)40, (Uint8)145, (Uint8)255},
+    {{650,350,50,50}, (Uint8)245, (Uint8)40, (Uint8)145, (Uint8)255},
     {}
 };
 
@@ -27,7 +28,7 @@ Room room2{
     {},
     {},
     {},
-    {{0,300,50,50}, (Uint8)245, (Uint8)40, (Uint8)145, (Uint8)255}
+    {{0,350,50,50}, (Uint8)245, (Uint8)40, (Uint8)145, (Uint8)255}
 };
 
 int room_counter=1;
@@ -85,7 +86,7 @@ int main(int argc, char* argv[]) { //Places for execution
     SDL_Event event;
 
     while (running) {
-        std::cout<< state;
+        std::cout<< current_colliding;
         room1.has_prev_door = false;
         room2.has_next_door = false;
 
@@ -93,7 +94,7 @@ int main(int argc, char* argv[]) { //Places for execution
             current_room=room1;}
         else if (room_counter==2) {
             current_room=room2;
-        };
+        }; //i prolly dont have to do this every frame, i can implement a method to trigger room change
             entity.clear();
             current_room.room_entity();
 
@@ -120,14 +121,6 @@ int main(int argc, char* argv[]) { //Places for execution
                     }
                     else if (state==State::walking) {
                         state=State::hiding;
-                    }
-                };
-                if (event.key.keysym.sym == SDLK_r) {
-                    if (room_counter==1) {
-                        room_counter=2;
-                    }
-                    else if (room_counter==2) {
-                        room_counter=1;
                     }
                 };
             }
@@ -221,15 +214,30 @@ int main(int argc, char* argv[]) { //Places for execution
         if (state == State::jumping && (cur_jump-last_jump>=jump_time)){
             state=State::walking;
         }
-        //Moving to the next room
-        if (rect1.collide_rect(current_room.next_door)) {
-            room_counter=2;
-            rect1.rect.x=60;
+
+
+//ROOOM
+
+        if (rect1.collide_rect(current_room.next_door)){
+            if (current_colliding !=enum_colliding::door){
+                current_colliding = enum_colliding::door;
+                room_counter+=1;
+                rect1.rect.x=0;
+            };
         }
-        if (rect1.collide_rect(current_room.prev_door)) {
-            room_counter=1;
+        else if (rect1.collide_rect(current_room.prev_door)){
+            if (current_colliding != enum_colliding::door){
+            current_colliding = enum_colliding::door;
+            room_counter-=1;
             rect1.rect.x=right-rect1.rect.w;
+            };
         }
+        else {
+            current_colliding=enum_colliding::none;
+        };
+        //Moving to the next room
+        //If current_colliding=None, switch to current_colliding=door
+        //If not colliding with a door, current_colliding=None
 
         // Per frame code
         //this is only checking collision with 1 wall, check for all entities
@@ -251,7 +259,6 @@ int main(int argc, char* argv[]) { //Places for execution
         current_room.render(renderer);
         // wall1.draw(renderer);
         // wall2.draw(renderer);
-        rect1.collide_check(entity);
 
         // push out frame
         (*frame_counter_ptr)++;
