@@ -6,7 +6,6 @@
 #include "linker.h"
 #include <variant>
 
-
 Rect rect1 = { {20, 20, 20, 20}, (Uint8)255, (Uint8)64, (Uint8)64, (Uint8)255 };
 //Render only the selected cubes
 //x, y, w, h
@@ -217,7 +216,7 @@ int main(int argc, char* argv[]) { //Places for execution
 
 
 //ROOOM
-
+//I do not need to do this, do not need to reassign room value every loop, send signals every time changes happen
         if (rect1.collide_rect(current_room.next_door)){
             if (current_colliding !=enum_colliding::door){
                 current_colliding = enum_colliding::door;
@@ -255,8 +254,8 @@ int main(int argc, char* argv[]) { //Places for execution
 
 
         // ground.draw(renderer);
-        rect1.draw(renderer);
         current_room.render(renderer);
+        rect1.draw(renderer);
         // wall1.draw(renderer);
         // wall2.draw(renderer);
 
