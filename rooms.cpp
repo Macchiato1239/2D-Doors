@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 #include "linker.h"
-
+#include <unordered_map>
 
 
 //W
@@ -46,6 +46,29 @@ void Room::room_entity(){ //Collision
         entity.push_back(objects[i]);
     }
 };
+Room room1{
+    {},
+    {},
+    {{650,350,50,50}, (Uint8)245, (Uint8)40, (Uint8)145, (Uint8)255},
+    {}
+};
+
+Room room2{
+    {},
+    {},
+    {},
+    {{0,350,50,50}, (Uint8)245, (Uint8)40, (Uint8)145, (Uint8)255}
+};
+
+std::unordered_map <int, Room> map = {
+    {1, room1},
+    {2, room2},
+};//IT IS STORING A COPY of room1 and room2,
+//i should use a pointer instead
+//do i really need a pointer?
+
+
+
 //Room --> objects in that room are pushed into entities{} and then drawn
 //Each objects are predefined first, then push_back --> copy into Room
 //std::vector<int> room_collection()

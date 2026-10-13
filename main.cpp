@@ -15,22 +15,13 @@ Rect rect1 = { {20, 20, 20, 20}, (Uint8)255, (Uint8)64, (Uint8)64, (Uint8)255 };
 // i am not satisfied with the game loop arrangement, can it be ran multithreaded?
 enum_colliding current_colliding=enum_colliding::none; //
 
-Room current_room;
-Room room1{
-    {},
-    {},
-    {{650,350,50,50}, (Uint8)245, (Uint8)40, (Uint8)145, (Uint8)255},
-    {}
-};
-
-Room room2{
-    {},
-    {},
-    {},
-    {{0,350,50,50}, (Uint8)245, (Uint8)40, (Uint8)145, (Uint8)255}
-};
+Room current_room; // use a dictionary
 
 int room_counter=1;
+
+void assigning_room_data() {
+
+}
 
 // STATES
 State state=State::walking;
@@ -76,11 +67,12 @@ int main(int argc, char* argv[]) { //Places for execution
     bool running = true;
 
     // ROOM TESTING
-    room1.object_put(wall1); // genuinely do not have to do this, im just duplicating
-    room1.object_put(ground);
+    map[1].object_put(wall1); // genuinely do not have to do this, im just duplicating
+    map[1].object_put(ground);// why would map[1] but room1 wont, unless the one in map{} is a copy
+                     
 
-    room2.object_put(wall2);
-    room2.object_put(ground);
+    map[2].object_put(wall2);
+    map[2].object_put(ground);
 
     SDL_Event event;
 
@@ -90,9 +82,9 @@ int main(int argc, char* argv[]) { //Places for execution
         room2.has_next_door = false;
 
         if (room_counter==1) {
-            current_room=room1;}
+            current_room=map[1];}
         else if (room_counter==2) {
-            current_room=room2;
+            current_room=map[2];
         }; //i prolly dont have to do this every frame, i can implement a method to trigger room change
             entity.clear();
             current_room.room_entity();

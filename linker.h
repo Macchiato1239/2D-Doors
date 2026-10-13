@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include <vector>
+#include <unordered_map>
 //main.cpp
 struct Rect { //Making cubes
     SDL_Rect rect;
@@ -40,6 +41,8 @@ extern Rect wall1;
 extern Rect wall2;
 extern Room room1;
 extern Room room2;
+extern std::unordered_map <int, Room> map;
+
 
 extern float speed_x;//speed per second
 extern float speed_y;//speed per second
@@ -89,6 +92,8 @@ enum enum_colliding {
     door,
     none,
 };
+
+
 
 extern enum_colliding current_colliding;
 
