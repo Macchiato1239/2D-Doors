@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
 #include <iostream>
 #include <string>
 #include <algorithm>
@@ -19,9 +20,9 @@ Room current_room; // use a dictionary
 
 int room_counter=1;
 
-void assigning_room_data() {
+// void assigning_room_data() {
 
-}
+// }
 
 // STATES
 State state=State::walking;
@@ -45,6 +46,8 @@ const Uint8* key_state = SDL_GetKeyboardState(NULL);
 
 int main(int argc, char* argv[]) { //Places for execution 
 
+
+
     SDL_Init(SDL_INIT_VIDEO);
     //Create a window
     SDL_Window* window = SDL_CreateWindow(
@@ -56,6 +59,7 @@ int main(int argc, char* argv[]) { //Places for execution
         0
     );
 
+
     // Drawer
 
     SDL_Renderer* renderer = SDL_CreateRenderer(
@@ -63,6 +67,18 @@ int main(int argc, char* argv[]) { //Places for execution
         -1,
         SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC
     );
+
+    if (TTF_Init() == -1) {
+        SDL_Log("SDL_ttf could not initialize: %s", SDL_GetError());
+        SDL_Quit();
+        return -1;
+    };
+    
+    TTF_Font* font = TTF_OpenFont("Font.ttf", 24);
+    if (!font) {
+        std::cerr << "Failed to load font: " << TTF_GetError() << std::endl;
+        return 1;
+    }
 
     bool running = true;
 
