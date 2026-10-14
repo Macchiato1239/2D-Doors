@@ -49,7 +49,7 @@ void Room::room_entity(){ //Collision
 Room room1{
     {},
     {},
-    {{650,350,50,50}, (Uint8)245, (Uint8)40, (Uint8)145, (Uint8)255},
+    {{500,350,50,50}, (Uint8)245, (Uint8)40, (Uint8)145, (Uint8)255},
     {}
 };
 

@@ -98,7 +98,8 @@ int main(int argc, char* argv[]) { //Places for execution
         room2.has_next_door = false;
 
         if (room_counter==1) {
-            current_room=map[1];}
+            current_room=map[1];
+        }
         else if (room_counter==2) {
             current_room=map[2];
         }; //i prolly dont have to do this every frame, i can implement a method to trigger room change
@@ -229,14 +230,14 @@ int main(int argc, char* argv[]) { //Places for execution
             if (current_colliding !=enum_colliding::door){
                 current_colliding = enum_colliding::door;
                 room_counter+=1;
-                rect1.rect.x=0;
+                rect1.rect.x=map[room_counter].prev_door.rect.x; //Tp to the next door
             };
         }
         else if (rect1.collide_rect(current_room.prev_door)){
             if (current_colliding != enum_colliding::door){
-            current_colliding = enum_colliding::door;
-            room_counter-=1;
-            rect1.rect.x=right-rect1.rect.w;
+                current_colliding = enum_colliding::door;
+                room_counter-=1;
+                rect1.rect.x=map[room_counter].next_door.rect.x;
             };
         }
         else {
