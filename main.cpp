@@ -7,6 +7,8 @@
 #include "linker.h"
 #include <variant>
 
+
+
 Rect rect1 = { {20, 20, 20, 20}, (Uint8)255, (Uint8)64, (Uint8)64, (Uint8)255 };
 //Render only the selected cubes
 //x, y, w, h
@@ -22,6 +24,12 @@ int room_counter=1;
 
 // void assigning_room_data() {
 
+
+//Text
+int text_x=350;
+int text_y=100;
+int text_width=40;
+int text_height=40;
 // }
 
 // STATES
@@ -80,6 +88,17 @@ int main(int argc, char* argv[]) { //Places for execution
         return 1;
     }
 
+    //TEXT
+
+    SDL_Color text_color = {0,0,0,255};
+    SDL_Surface* textSurface;
+    //textSurface may change, so declare and put in loop
+    SDL_Texture* textTexture;
+
+    SDL_Rect desRect ={text_x, text_y, text_width, text_height};
+
+
+
     bool running = true;
 
     // ROOM TESTING
@@ -93,7 +112,10 @@ int main(int argc, char* argv[]) { //Places for execution
     SDL_Event event;
 
     while (running) {
-        std::cout<< current_colliding;
+        //1. create the surface
+        textSurface = TTF_RenderText_Solid(font, std::to_string(room_counter).c_str(), text_color);
+
+        // std::cout<< current_colliding;
         room1.has_prev_door = false;
         room2.has_next_door = false;
 
@@ -252,18 +274,21 @@ int main(int argc, char* argv[]) { //Places for execution
         //Gravity
         //Keep player falling, but not a great idea
 
-
-
-
         // Rendering rendering rendering rendering rendering
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); //white
         SDL_RenderClear(renderer);
 
 
-
-
         // ground.draw(renderer);
         current_room.render(renderer);
+
+        //text
+        textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
+        SDL_FreeSurface(textSurface);
+        SDL_RenderCopy(renderer, textTexture, NULL, &desRect);
+
+
+
         rect1.draw(renderer);
         // wall1.draw(renderer);
         // wall2.draw(renderer);
@@ -280,10 +305,13 @@ int main(int argc, char* argv[]) { //Places for execution
             SDL_SetWindowTitle(window, fps_string.c_str());
         }        
         SDL_RenderPresent(renderer);
+        SDL_DestroyTexture(textTexture);
     }
 
     SDL_DestroyRenderer(renderer);
+    TTF_CloseFont(font);
     SDL_DestroyWindow(window);
+    TTF_Quit();
     SDL_Quit();
 
     return 0;

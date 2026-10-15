@@ -60,6 +60,7 @@ Room room2{
     {{0,350,50,50}, (Uint8)245, (Uint8)40, (Uint8)145, (Uint8)255}
 };
 
+//COLLECTION OF ROOMS
 std::unordered_map <int, Room> map = {
     {1, room1},
     {2, room2},
