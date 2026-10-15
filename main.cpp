@@ -153,13 +153,24 @@ int main(int argc, char* argv[]) { //Places for execution
                         state=State::hiding;
                     }
                 };
+                if (event.key.keysym.sym == SDLK_r) {
+                    if (rush_active==false){
+                        std::cout << "Rush spawned";
+                        rush_active=true;
+                        rush_attacked=false;
+                    } 
+                    else if (rush_active){
+                        std::cout << "Rush despawned";
+                        rush_active=false;
+                        rush_attacked=false;
+                    }
+
+                    //Spawning rush toggle  
+                }
             }
         }
         //DELTA TIME
         Uint64 current_time = SDL_GetPerformanceCounter();
-
-
-
 
 
 
@@ -269,26 +280,32 @@ int main(int argc, char* argv[]) { //Places for execution
         //If current_colliding=None, switch to current_colliding=door
         //If not colliding with a door, current_colliding=None
 
-        // Per frame code
-        //this is only checking collision with 1 wall, check for all entities
-        //Gravity
-        //Keep player falling, but not a great idea
+
+
+        if (rush_active){ //RUSH 
+            if (rect1.collide_rect(rush) && rush_attacked==false){
+                health=std::max(0,health-30);
+                healthbar.rect.w=health;
+                std::cout << health;
+                std::cout << "health_bar_width" << healthbar.rect.w;
+                rush_attacked=true;
+            }
+        };
 
         // Rendering rendering rendering rendering rendering
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); //white
         SDL_RenderClear(renderer);
-
-
-        // ground.draw(renderer);
-        current_room.render(renderer);
 
         //text
         textTexture = SDL_CreateTextureFromSurface(renderer, textSurface);
         SDL_FreeSurface(textSurface);
         SDL_RenderCopy(renderer, textTexture, NULL, &desRect);
 
-
-
+        current_room.render(renderer);
+        if (rush_active == true){
+            rush.draw(renderer);
+        };
+        healthbar.draw(renderer);
         rect1.draw(renderer);
         // wall1.draw(renderer);
         // wall2.draw(renderer);

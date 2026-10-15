@@ -34,15 +34,24 @@ struct Room {
     void room_entity();
 };
 
-
+//RECT and ROOM
 extern Rect rect1;
 extern Rect ground;
 extern Rect wall1;
 extern Rect wall2;
 extern Room room1;
 extern Room room2;
+//threats
+extern bool rush_active;
+extern bool rush_attacked;
+extern Rect rush;
+extern std::vector<Rect> threats;
 extern std::unordered_map <int, Room> map;
 
+extern int max_health;
+extern int health;
+extern int* health_ptr;
+extern Rect healthbar;
 
 extern float speed_x;//speed per second
 extern float speed_y;//speed per second

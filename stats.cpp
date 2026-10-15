@@ -4,7 +4,13 @@
 #include "linker.h"
 
 
+//Health
+int max_health=150;
+int health=max_health;
+int* health_ptr=&health;
+Rect healthbar = { {10, 20, *health_ptr, 20}, (Uint8)245, (Uint8)39, (Uint8)39, (Uint8)255 };
 //SPEED
+
 float speed_x = 300; //speed per second
 float speed_y = 300; //speed per second
 float dt;
@@ -23,3 +29,4 @@ float left=0;
 float top=0;
 float bottom=window_height;
 float right=window_width;
+
